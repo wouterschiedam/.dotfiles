@@ -82,5 +82,5 @@ source $ZSH/oh-my-zsh.sh
 alias zshconf="nvim ~/.dotfiles/.zshrc"
 alias ohmyzshconf="nvim ~/.oh-my-zsh"
 alias tmuxconf="nvim ~/.dotfiles/.tmux.conf"
-alias nvimconf="nvim ~/.dotfiles/.config/nvim"
+alias nvimconf="nvim ~/.dotfiles/nvim"
 
