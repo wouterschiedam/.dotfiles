@@ -61,15 +61,19 @@ const rules: KarabinerRules[] = [
         ),
         // b = "B"rowse
         b: {
-            t: open("https://twitter.com"),
             l: open("https://localhost:141"),
             r: open("https://reddit.com"),
+            g: open("https://gitlab.com"),
         },
         // o = "Open" applications
         o: {
             s: app("Safari"),
             t: app("Kitty"),
             d: app("Tableplus"),
+            n: app("Notion"),
+            v: app("Slack"),
+            l: app("Postman"),
+            c: app("ChatGPT")
         },
 
         // v = "moVe" which isn't "m" because we want it to be on the left hand
@@ -89,7 +93,72 @@ const rules: KarabinerRules[] = [
             },
         },
 
+        // Add numbers
+        'left_command': {
+            a: {
+                to: [{ key_code: "1" }],
+            },
+            s: {
+                to: [{ key_code: "2" }],
+            },
+            d: {
+                to: [{ key_code: "3" }],
+            },
+            f: {
+                to: [{ key_code: "4" }],
+            },
+            g: {
+                to: [{ key_code: "5" }],
+            },
+            h: {
+                to: [{ key_code: "6" }],
+            },
+            j: {
+                to: [{ key_code: "7" }],
+            },
+            k: {
+                to: [{ key_code: "8" }],
+            },
+            l: {
+                to: [{ key_code: "9" }],
+            },
+            'semicolon': {
+                to: [{ key_code: "0" }],
+            },
+        },
         // Add special characters
+        'right_command': {
+            a: {
+                to: [{ key_code: "1" }],
+            },
+            s: {
+                to: [{ key_code: "2" }],
+            },
+            d: {
+                to: [{ key_code: "3" }],
+            },
+            f: {
+                to: [{ key_code: "4" }],
+            },
+            g: {
+                to: [{ key_code: "5" }],
+            },
+            h: {
+                to: [{ key_code: "6" }],
+            },
+            j: {
+                to: [{ key_code: "7" }],
+            },
+            k: {
+                to: [{ key_code: "8" }],
+            },
+            l: {
+                to: [{ key_code: "9" }],
+            },
+            'semicolon': {
+                to: [{ key_code: "0" }],
+            },
+        },
 
     }),
 ];

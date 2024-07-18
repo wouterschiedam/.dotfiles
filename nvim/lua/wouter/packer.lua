@@ -6,18 +6,36 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  use({
-      "catppuccin/nvim", as = "catppuccin",
-      config = function()
-          vim.cmd('colorscheme catppuccin')
-          require("catppuccin").setup {
-              color_overrides = {
-              }
-          }
-      end
-  })
+  -- use({
+  --     "catppuccin/nvim", as = "catppuccin",
+  --     config = function()
+  --         vim.cmd('colorscheme catppuccin')
+  --         require("catppuccin").setup {
+  --             color_overrides = {
+  --             }
+  --         }
+  --     end
+  -- })
+
+  -- use 'rose-pine/neovim';
+  use 'AlexvZyl/nordic.nvim';
 
   use ('vimwiki/vimwiki')
+
+  -- Codeium
+  use {
+    "Exafunction/codeium.nvim",
+    requires = {
+        "nvim-lua/plenary.nvim",
+        "hrsh7th/nvim-cmp",
+    },
+    config = function()
+        require("codeium").setup({
+        })
+    end
+  }
+  use "onsails/lspkind.nvim"
+
 
   use {
 	  'nvim-telescope/telescope.nvim', tag = '0.1.3',
@@ -72,18 +90,11 @@ return require('packer').startup(function(use)
       end
   })
 
-  use({
-  "jackMort/ChatGPT.nvim",
-    config = function()
-      require("chatgpt").setup()
-    end,
-    requires = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "folke/trouble.nvim",
-      "nvim-telescope/telescope.nvim"
-    }
-  })
+  use {
+    'L3MON4D3/LuaSnip',
+    tag = "v2.3.0",
+    run = "make install_jsregexp",
+  }
 
   use("nvim-treesitter/playground")
   -- quick files
@@ -97,16 +108,8 @@ return require('packer').startup(function(use)
   -- html/css/bootstrap suggestions
   use "sharkdp/fd"
   use "nvim-lua/plenary.nvim"
+
   -- comments ARE usefull
   use "terrortylor/nvim-comment"
-
-  -- Codeium
-  use { 'Exafunction/codeium.vim', 
-    config = function ()
-        vim.g.codeium_disable_bindings = 1
-        vim.keymap.set('i', '<C-a>', function () return vim.fn['codeium#Accept']() end, { expr = true, silent = true })
-    end
-  }
-
 
 end)

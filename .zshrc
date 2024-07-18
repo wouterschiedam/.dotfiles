@@ -83,4 +83,5 @@ alias zshconf="nvim ~/.dotfiles/.zshrc"
 alias ohmyzshconf="nvim ~/.oh-my-zsh"
 alias tmuxconf="nvim ~/.dotfiles/.tmux.conf"
 alias nvimconf="nvim ~/.dotfiles/nvim"
-
+alias dup="docker compose up -d"
+alias vim="nvim"
