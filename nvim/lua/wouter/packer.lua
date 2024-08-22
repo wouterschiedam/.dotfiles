@@ -91,6 +91,15 @@ return require('packer').startup(function(use)
   })
 
   use {
+      "FabijanZulj/blame.nvim",
+      config = function()
+        require("blame").setup({
+
+        })
+      end
+  }
+
+  use {
     'L3MON4D3/LuaSnip',
     tag = "v2.3.0",
     run = "make install_jsregexp",
@@ -111,5 +120,29 @@ return require('packer').startup(function(use)
 
   -- comments ARE usefull
   use "terrortylor/nvim-comment"
+
+
+  -- PHP DAP
+  use 'mfussenegger/nvim-dap'
+  use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio"} }
+  use {'nvim-tree/nvim-web-devicons',
+    config = function()
+      require'nvim-web-devicons'.setup()
+    end
+  }
+  use 'folke/neodev.nvim'
+  use {
+  'nvim-lualine/lualine.nvim',
+  config = function ()
+    require("neodev").setup({
+      library = { plugins = { "nvim-dap-ui" }, types = true },
+    })
+  end
+  }
+
+
+  -- Java
+  use 'mfussenegger/nvim-jdtls'
+
 
 end)

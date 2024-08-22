@@ -73,7 +73,8 @@ const rules: KarabinerRules[] = [
             n: app("Notion"),
             v: app("Slack"),
             l: app("Postman"),
-            c: app("ChatGPT")
+            c: app("ChatGPT"),
+            q: app("Obsidian")
         },
 
         // v = "moVe" which isn't "m" because we want it to be on the left hand
@@ -90,6 +91,29 @@ const rules: KarabinerRules[] = [
             },
             l: {
                 to: [{ key_code: "right_arrow" }],
+            },
+        },
+        f: {
+            1: {
+                to: [{ key_code: "f1" }],
+            },
+            2: {
+                to: [{ key_code: "f2" }],
+            },
+            3: {
+                to: [{ key_code: "f3" }],
+            },
+            4: {
+                to: [{ key_code: "f4" }],
+            },
+            5: {
+                to: [{ key_code: "f5" }],
+            },
+            6: {
+                to: [{ key_code: "f6" }],
+            },
+            q: {
+                to: [{ key_code: "f7" }],
             },
         },
 

@@ -845,29 +845,6 @@
                     "value": 1
                   }
                 ]
-              },
-              {
-                "to": [
-                  {
-                    "key_code": "f7"
-                  }
-                ],
-                "type": "basic",
-                "from": {
-                  "key_code": "q",
-                  "modifiers": {
-                    "optional": [
-                      "any"
-                    ]
-                  }
-                },
-                "conditions": [
-                  {
-                    "type": "variable_if",
-                    "name": "hyper_sublayer_f",
-                    "value": 1
-                  }
-                ]
               }
             ]
           },

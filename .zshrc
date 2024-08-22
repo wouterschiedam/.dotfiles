@@ -85,3 +85,5 @@ alias tmuxconf="nvim ~/.dotfiles/.tmux.conf"
 alias nvimconf="nvim ~/.dotfiles/nvim"
 alias dup="docker compose up -d"
 alias vim="nvim"
+
+export JAVA_HOME=$(/usr/libexec/java_home -v 19)

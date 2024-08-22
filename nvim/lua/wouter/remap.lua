@@ -29,3 +29,4 @@ vim.api.nvim_set_keymap('n', '<leader>ww', ':vsplit | VimwikiIndex<CR>', { norem
 vim.api.nvim_set_keymap('n', '<leader>fs', '<C-w>|', { noremap = true, silent = true })
 -- ExitFullscreen
 vim.api.nvim_set_keymap('n', '<leader>rs', '<C-w>=', { noremap = true, silent = true })
+
