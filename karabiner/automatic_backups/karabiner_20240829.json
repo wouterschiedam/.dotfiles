@@ -6,6 +6,7 @@
                 "rules": [
                     {
                         "description": "Hyper Key (⌃⌥⇧⌘)",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "description": "Caps Lock -> Hyper Key",

@@ -6,6 +6,7 @@
                 "rules": [
                     {
                         "description": "Hyper Key (⌃⌥⇧⌘)",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "description": "Caps Lock -> Hyper Key",
@@ -36,6 +37,7 @@
                     },
                     {
                         "description": "Hyper Key + spacebar",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "conditions": [
@@ -57,6 +59,7 @@
                     },
                     {
                         "description": "Hyper Key sublayer \"b\"",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "conditions": [
@@ -171,6 +174,7 @@
                     },
                     {
                         "description": "Hyper Key sublayer \"o\"",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "conditions": [
@@ -365,6 +369,7 @@
                     },
                     {
                         "description": "Hyper Key sublayer \"v\"",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "conditions": [
@@ -491,6 +496,7 @@
                     },
                     {
                         "description": "Hyper Key sublayer \"f\"",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "conditions": [
@@ -662,6 +668,7 @@
                     },
                     {
                         "description": "Hyper Key sublayer \"left_command\"",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "conditions": [
@@ -878,6 +885,7 @@
                     },
                     {
                         "description": "Hyper Key sublayer \"right_command\"",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "conditions": [

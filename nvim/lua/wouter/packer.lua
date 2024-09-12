@@ -18,9 +18,10 @@ return require('packer').startup(function(use)
   -- })
 
   -- use 'rose-pine/neovim';
-  use 'AlexvZyl/nordic.nvim';
 
   use ('vimwiki/vimwiki')
+
+  use "rebelot/kanagawa.nvim"
 
   -- Codeium
   use {
