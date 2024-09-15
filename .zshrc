@@ -86,4 +86,4 @@ alias nvimconf="nvim ~/.dotfiles/nvim"
 alias dup="docker compose up -d"
 alias vim="nvim"
 
-export JAVA_HOME=$(/usr/libexec/java_home -v 19)
+#export JAVA_HOME=$(/usr/libexec/java_home -v 19)

@@ -9,13 +9,13 @@
 # Function to update and upgrade the system
 update_system() {
     echo "Updating and upgrading Linux system..."
-    sudo apt update && sudo apt upgrade -y || { echo "Failed to update system"; exit 1; }
+    sudo dnf update && sudo dnf upgrade -y || { echo "Failed to update system"; exit 1; }
 }
 
 # Function to install necessary packages
 install_packages() {
     echo "Installing required packages on Linux..."
-    sudo apt install -y git curl zsh tmux neovim || { echo "Failed to install packages"; exit 1; }
+    sudo dnf install -y git curl zsh tmux neovim || { echo "Failed to install packages"; exit 1; }
 }
 
 # Function to clone dotfiles repository
@@ -33,14 +33,13 @@ create_symlinks() {
     echo "Creating symlinks for dotfiles..."
     
     # Symlink for .zshrc
-    ln -sf $HOME/.dotfiles/.zshrc $HOME/.zshrc
+    ln -s $HOME/.dotfiles/.zshrc $HOME/.zshrc
     
     # Symlink for .tmux.conf
-    ln -sf $HOME/.dotfiles/.tmux.conf $HOME/.tmux.conf
+    ln -s $HOME/.dotfiles/.tmux.conf $HOME/.tmux.conf
     
     # Symlink for Neovim config
-    mkdir -p $HOME/.config/nvim
-    ln -sf $HOME/.dotfiles/.config/nvim/init.vim $HOME/.config/nvim/init.vim
+    ln -s $HOME/.dotfiles/nvim $HOME/.config/nvim
     
     echo "Symlinks created."
 }
@@ -82,7 +81,7 @@ install_vimplug() {
 # Function to install additional Linux tools
 install_linux_tools() {
     echo "Installing additional Linux tools..."
-    sudo apt install -y build-essential || { echo "Failed to install additional Linux tools"; exit 1; }
+    sudo dnf install -y build-essential || { echo "Failed to install additional Linux tools"; exit 1; }
 }
 
 # Main function to run the setup
