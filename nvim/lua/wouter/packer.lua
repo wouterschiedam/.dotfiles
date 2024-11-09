@@ -6,22 +6,8 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-  -- use({
-  --     "catppuccin/nvim", as = "catppuccin",
-  --     config = function()
-  --         vim.cmd('colorscheme catppuccin')
-  --         require("catppuccin").setup {
-  --             color_overrides = {
-  --             }
-  --         }
-  --     end
-  -- })
-
-  -- use 'rose-pine/neovim';
-
-  use ('vimwiki/vimwiki')
-
-  use "rebelot/kanagawa.nvim"
+  use 'rose-pine/neovim';
+  use { "catppuccin/nvim", as = "catppuccin" }
 
   -- Codeium
   use {

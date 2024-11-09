@@ -1,0 +1,8 @@
+[20:37:03 2024-11-09] FETCHING Version 2.38.4
+[20:37:03 2024-11-09] DOWNLOADING https://github.com/spicetify/cli/releases/download/v2.38.4/spicetify-2.38.4-darwin-arm64.tar.gz
+[20:37:04 2024-11-09] EXTRACTING /Users/wouter/.spicetify/spicetify.tar.gz
+[20:37:04 2024-11-09] SETTING EXECUTABLE PERMISSIONS TO /Users/wouter/.spicetify/spicetify
+[20:37:04 2024-11-09] REMOVING /Users/wouter/.spicetify/spicetify.tar.gz
+[20:37:04 2024-11-09] spicetify path already set in /Users/wouter/.zshrc, continuing...
+[20:37:04 2024-11-09] spicetify v2.38.4 was installed successfully to /Users/wouter/.spicetify
+[20:37:04 2024-11-09] Run 'spicetify --help' to get started

@@ -9,12 +9,12 @@ end)
 require('mason').setup({})
 require('mason-lspconfig').setup({
     ensure_installed = {
-      'tsserver',
       'html',
       'cssls',
       'rust_analyzer',
-      'tsserver',
-      'omnisharp'
+      'ts_ls',
+      'omnisharp',
+      'intelephense'
     },
   handlers = {
     lsp_zero.default_setup,
@@ -26,7 +26,7 @@ lsp_zero.format_on_save({
     timeout_ms = 10000,
   },
   servers = {
-    ['tsserver'] = {'javascript', 'typescript'},
+    ['ts_ls'] = {'javascript', 'typescript'},
     ['rust_analyzer'] = {'rust'},
     ['intelephense'] = {'php'},
     ['omnisharp'] = {'csharp'}
@@ -34,11 +34,16 @@ lsp_zero.format_on_save({
 })
 
 require('lspconfig').intelephense.setup({
-  on_attach = lsp_zero.on_attach,
+  -- Set space size crashes on FiveX Repo
+  cmd = { "node", "--max-old-space-size=4096", vim.fn.expand("~/.local/share/nvim/mason/bin/intelephense"), "--stdio" },
+  root_dir = function(fname)
+    return require('lspconfig').util.find_git_ancestor(fname) or vim.fn.getcwd()
+  end,
   init_options = {
-      licenseKey = '~/intelephense/license.txt';
-  }
+    licenseKey = vim.fn.expand('~/intelephense/license.txt'),
+  },
 })
+
 
 require('lspconfig').rust_analyzer.setup({
 settings = {
@@ -64,6 +69,7 @@ lsp_zero.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
   vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
+  vim.keymap.set("n", "<leader>e", function() vim.diagnostic.setloclist() end, opts)
 end)
 
 lsp_zero.setup()

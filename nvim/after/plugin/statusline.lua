@@ -1,7 +1,15 @@
+local custom_rosepine = require'lualine.themes.rose-pine'
+custom_rosepine.normal.c.bg = "none"
+custom_rosepine.insert.c.bg = "none"
+custom_rosepine.visual.c.bg = "none"
+custom_rosepine.replace.c.bg = "none"
+custom_rosepine.command.c.bg = "none"
+custom_rosepine.inactive.c.bg = "none"
+
 require('lualine').setup {
   options = {
     icons_enabled = true,
-    theme = 'auto',
+    theme= custom_rosepine,
     component_separators = { left = '', right = ''},
     section_separators = { left = '', right = ''},
     disabled_filetypes = {

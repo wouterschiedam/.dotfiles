@@ -257,12 +257,12 @@
                                         "value": 1
                                     }
                                 ],
-                                "description": "Open -a 'Alacritty.app'",
+                                "description": "Open -a 'Kitty.app'",
                                 "from": {
                                     "key_code": "t",
                                     "modifiers": { "optional": ["any"] }
                                 },
-                                "to": [{ "shell_command": "open -a 'Alacritty.app'" }],
+                                "to": [{ "shell_command": "open -a 'Kitty.app'" }],
                                 "type": "basic"
                             },
                             {
@@ -652,10 +652,10 @@
                                     }
                                 ],
                                 "from": {
-                                    "key_code": "r",
+                                    "key_code": "q",
                                     "modifiers": { "optional": ["any"] }
                                 },
-                                "to": [{ "key_code": "f6" }],
+                                "to": [{ "key_code": "f7" }],
                                 "type": "basic"
                             }
                         ]
@@ -1094,8 +1094,7 @@
                     }
                 ]
             },
-            "name": "Default",
-            "virtual_hid_keyboard": { "keyboard_type_v2": "iso" }
+            "name": "Default"
         }
     ]
 }

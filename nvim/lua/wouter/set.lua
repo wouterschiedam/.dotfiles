@@ -28,7 +28,7 @@ vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50
 
-vim.opt.colorcolumn = "150"
+-- vim.opt.colorcolumn = "150"
 vim.opt.formatoptions = vim.o.formatoptions:gsub('cro', '') -- Avoid comments to continue on new lines
 
 vim.g.editorconfig = true

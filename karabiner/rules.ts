@@ -68,7 +68,7 @@ const rules: KarabinerRules[] = [
         // o = "Open" applications
         o: {
             s: app("Safari"),
-            t: app("Kitty"),
+            t: app("Alacritty"),
             d: app("Tableplus"),
             n: app("Notion"),
             v: app("Slack"),
@@ -112,8 +112,8 @@ const rules: KarabinerRules[] = [
             6: {
                 to: [{ key_code: "f6" }],
             },
-            q: {
-                to: [{ key_code: "f7" }],
+            r: {
+                to: [{ key_code: "f6" }],
             },
         },
 
