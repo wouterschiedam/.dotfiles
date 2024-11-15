@@ -83,14 +83,12 @@ alias zshconf="nvim ~/.dotfiles/.zshrc"
 alias ohmyzshconf="nvim ~/.oh-my-zsh"
 alias tmuxconf="nvim ~/.dotfiles/.tmux.conf"
 alias nvimconf="nvim ~/.dotfiles/nvim"
+alias dot="cd ~/.dotfiles"
 alias dup="docker compose up -d"
 alias down="docker compose stop"
 alias dssh="docker compose exec web bash"
 alias vim="nvim"
 
-<<<<<<< Updated upstream
-#export JAVA_HOME=$(/usr/libexec/java_home -v 19)
-=======
 export JAVA_HOME=$(/usr/libexec/java_home -v 19)
 
 export NVM_DIR="$HOME/.nvm"
@@ -100,4 +98,3 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 export PATH=$PATH:/Users/wouter/.spicetify
->>>>>>> Stashed changes

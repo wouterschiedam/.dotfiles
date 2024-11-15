@@ -70,7 +70,7 @@ const rules: KarabinerRules[] = [
             s: app("Safari"),
             t: app("Alacritty"),
             d: app("Tableplus"),
-            n: app("Notion"),
+            m: app("Spotify"),
             v: app("Slack"),
             l: app("Postman"),
             c: app("ChatGPT"),
