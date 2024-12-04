@@ -21,8 +21,9 @@ return require('packer').startup(function(use)
         })
     end
   }
-  use "onsails/lspkind.nvim"
 
+  use "onsails/lspkind.nvim"
+  use 'f-person/git-blame.nvim'
 
   use {
 	  'nvim-telescope/telescope.nvim', tag = '0.1.3',
@@ -86,28 +87,26 @@ return require('packer').startup(function(use)
       end
   }
 
+  -- Create custom shortcuts
   use {
     'L3MON4D3/LuaSnip',
     tag = "v2.3.0",
     run = "make install_jsregexp",
   }
 
-  use("nvim-treesitter/playground")
+    -- Add null-ls.nvim for integrating external linters and formatters
+  use {
+      'jose-elias-alvarez/null-ls.nvim',
+      requires = { 'nvim-lua/plenary.nvim' },
+      config = function()
+            require("null-ls")  -- Ensure this matches your setup
+        end,
+  }
+
   -- quick files
   use("theprimeagen/harpoon")
   use("theprimeagen/refactoring.nvim")
   use("nvim-treesitter/nvim-treesitter-context");
-
-  -- Easy life for html
-  use 'mhartington/formatter.nvim'
-  use("mattn/emmet-vim");
-  -- html/css/bootstrap suggestions
-  use "sharkdp/fd"
-  use "nvim-lua/plenary.nvim"
-
-  -- comments ARE usefull
-  use "terrortylor/nvim-comment"
-
 
   -- PHP DAP
   use 'mfussenegger/nvim-dap'
@@ -117,6 +116,7 @@ return require('packer').startup(function(use)
       require'nvim-web-devicons'.setup()
     end
   }
+
   use 'folke/neodev.nvim'
   use {
   'nvim-lualine/lualine.nvim',
@@ -126,10 +126,4 @@ return require('packer').startup(function(use)
     })
   end
   }
-
-
-  -- Java
-  use 'mfussenegger/nvim-jdtls'
-
-
 end)

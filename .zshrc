@@ -88,6 +88,8 @@ alias dup="docker compose up -d"
 alias down="docker compose stop"
 alias dssh="docker compose exec web bash"
 alias vim="nvim"
+alias find="fd"
+alias grep="rg"
 
 export JAVA_HOME=$(/usr/libexec/java_home -v 19)
 
@@ -98,3 +100,5 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
 export PATH=$PATH:/Users/wouter/.spicetify
+source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+bindkey '\t' autosuggest-accept

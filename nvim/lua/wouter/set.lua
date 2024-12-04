@@ -3,7 +3,8 @@ vim.opt.guicursor = ""
 vim.opt.nu = true
 vim.opt.relativenumber = true
 
-vim.opt.tabstop = 4
+-- Default tab settings (fallback if .editorconfig isn't applied)
+vim.opt.tabstop = 2
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
@@ -31,5 +32,6 @@ vim.opt.updatetime = 50
 -- vim.opt.colorcolumn = "150"
 vim.opt.formatoptions = vim.o.formatoptions:gsub('cro', '') -- Avoid comments to continue on new lines
 
+-- Enable EditorConfig
 vim.g.editorconfig = true
 

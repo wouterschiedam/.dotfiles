@@ -1,0 +1,21 @@
+# Focus Safari (Option + S)
+alt - s : open -a Safari
+
+# Focus Terminal (Option + T)
+alt - t : open -a Alacritty
+
+# Focus Spotify (Option + P)
+alt - p : open -a Spotify
+
+# Focus TablePlus (Option + P)
+alt - d : open -a TablePlus
+
+# Focus YTMusic (Option + Y)
+alt - y : open -a Youtube Music
+
+# Focus Notion (Option + N)
+alt - n : open -a Notion
+
+# Focus Slack (Option + V)
+alt - v : open -a Slack
+
