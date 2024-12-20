@@ -2,7 +2,7 @@
 alt - s : open -a Safari
 
 # Focus Terminal (Option + T)
-alt - t : open -a Alacritty
+alt - z : open -a Alacritty
 
 # Focus Spotify (Option + P)
 alt - p : open -a Spotify

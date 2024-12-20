@@ -1,5 +1,5 @@
 -- Load the colorscheme
-vim.cmd.colorscheme("catppuccin-frappe");
+vim.cmd.colorscheme("melange");
 
 function DoRecolor(color)
     color = color or "rose-pine";

@@ -3,7 +3,7 @@ local cmp = require 'cmp'
 cmp.setup({
     snippet = {
         expand = function(args)
-            require('luasnip').lsp_expand(args.body) -- For LuaSnip users.
+            require('luasnip').lsp_expand(args.body)
         end,
     },
     window = {
@@ -15,13 +15,12 @@ cmp.setup({
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
         ['<C-e>'] = cmp.mapping.abort(),
-        ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
     }),
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
         { name = 'codeium' },
-        { name = 'luasnip' }, -- For LuaSnip users.
+        { name = 'luasnip' },
     }, {
         { name = 'buffer' },
     }),
@@ -63,16 +62,16 @@ cmp.setup({
     },
 })
 
--- Set configuration for specific filetype.
+-- Git commit-specific configuration
 cmp.setup.filetype('gitcommit', {
     sources = cmp.config.sources({
-        { name = 'git' }, -- You can specify the `git` source if you installed it.
+        { name = 'git' },
     }, {
         { name = 'buffer' },
     })
 })
 
--- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+-- Command-line completion
 cmp.setup.cmdline({ '/', '?' }, {
     mapping = cmp.mapping.preset.cmdline(),
     sources = {
@@ -80,7 +79,6 @@ cmp.setup.cmdline({ '/', '?' }, {
     }
 })
 
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
@@ -89,3 +87,4 @@ cmp.setup.cmdline(':', {
         { name = 'cmdline' }
     })
 })
+

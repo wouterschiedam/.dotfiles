@@ -1,4 +1,4 @@
-local custom_rosepine = require'lualine.themes.rose-pine'
+local custom_rosepine = require'lualine.themes.gruvbox'
 custom_rosepine.normal.c.bg = "none"
 custom_rosepine.insert.c.bg = "none"
 custom_rosepine.visual.c.bg = "none"

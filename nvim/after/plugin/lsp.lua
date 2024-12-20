@@ -2,6 +2,9 @@
 
 local lsp_zero = require('lsp-zero')
 
+local function diagnostics_to_quickfix()
+    vim.diagnostic.setqflist({ open = true })
+end
 -- Initialize lsp-zero with recommended settings
 lsp_zero.preset('recommended')
 
@@ -41,23 +44,12 @@ lsp_zero.on_attach(function(client, bufnr)
     vim.keymap.set("n", "<leader>vca", vim.lsp.buf.code_action, opts)
     vim.keymap.set("n", "<leader>vrr", vim.lsp.buf.references, opts)
     vim.keymap.set("n", "<leader>vrn", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "<leader>q", diagnostics_to_quickfix, opts)
     vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
     vim.keymap.set("n", "<leader>e", vim.diagnostic.setloclist, opts)
+
 end)
 
--- Setup format on save, excluding 'null-ls'
-lsp_zero.format_on_save({
-    format_opts = {
-        async = true,
-        timeout_ms = 10000,
-    },
-    servers = {
-        ['tsserver'] = { 'javascript', 'typescript' }, -- Corrected from 'ts_ls'
-        ['rust_analyzer'] = { 'rust' },
-        ['omnisharp'] = { 'csharp' },
-        ['null-ls'] = { 'php' }
-    }
-})
 
 -- Setup specific LSP servers with custom configurations
 -- Intelephense (PHP)
@@ -65,6 +57,10 @@ require('lspconfig').intelephense.setup({
     cmd = { "node", "--max-old-space-size=4096", vim.fn.expand("~/.local/share/nvim/mason/bin/intelephense"), "--stdio" },
     root_dir = function(fname)
         return require('lspconfig').util.find_git_ancestor(fname) or vim.fn.getcwd()
+    end,
+    on_attach = function(client, bufnr)
+        -- Disable LSP formatting for PHP
+        client.server_capabilities.documentFormattingProvider = false
     end,
     init_options = {
         licenseKey = vim.fn.expand('~/intelephense/license.txt'),
@@ -74,12 +70,22 @@ require('lspconfig').intelephense.setup({
 
 -- Rust Analyzer
 require('lspconfig').rust_analyzer.setup({
+    cmd = { "rust-analyzer" },
+    root_dir = vim.loop.cwd,
     settings = {
         ['rust-analyzer'] = {
+            cargo = {
+                env = {
+                    LIBTORCH_USE_PYTORCH = "1",
+                    LIBTORCH_BYPASS_VERSION_CHECK = "1",
+                },
+            },
             diagnostics = {
                 enable = true,
             },
-            inlayHints = true
+            inlayHints = {
+                enable = true
+            }
         }
     },
     -- on_attach is handled by lsp-zero's on_attach

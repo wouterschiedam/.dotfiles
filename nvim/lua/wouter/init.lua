@@ -1,5 +1,5 @@
+require("wouter.lazy")
 require("wouter.remap")
-require("wouter.packer")
 require("wouter.set")
 
 -- Define the FormatFiles function

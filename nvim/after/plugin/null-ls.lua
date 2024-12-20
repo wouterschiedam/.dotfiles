@@ -12,18 +12,6 @@ end
 
 null_ls.setup({
     sources = {
-        null_ls.builtins.formatting.phpcbf.with({
-            command = "/opt/homebrew/bin/phpcbf",
-            args = function(params)
-                local phpcs_config = get_phpcs_config(params)
-                if phpcs_config then
-                    return { "--standard=" .. phpcs_config, params.filename }
-                else
-                    return { "--standard=PSR12", params.filename }
-                end
-            end,
-            filetypes = { "php" },
-        }),
         null_ls.builtins.diagnostics.phpcs.with({
             command = "/opt/homebrew/bin/phpcs",
             args = function(params)
