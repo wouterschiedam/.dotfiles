@@ -16,6 +16,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
 
 local plugins = {
+    -- Theme
     {"savq/melange-nvim"},
 
     -- Codeium
@@ -30,14 +31,13 @@ local plugins = {
         end,
     },
 
-    "onsails/lspkind.nvim",
 
     -- Telescope
     {
         'nvim-telescope/telescope.nvim', tag = '0.1.3',
         dependencies = { {'nvim-lua/plenary.nvim'} },
         config = function()
-            require("telescope").setup({})
+            require("telescope").setup()
         end,
     },
 
@@ -49,21 +49,11 @@ local plugins = {
         end,
     },
 
-    -- Autotag
-    {
-        "windwp/nvim-ts-autotag",
-        config = function()
-            require("nvim-ts-autotag").setup()
-        end,
-    },
-
-    -- Undo tree
-    "mbbill/undotree",
-
     -- Fugitive
     "tpope/vim-fugitive",
 
     -- LSP Setup
+    "onsails/lspkind.nvim",
     {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v3.x',
@@ -87,18 +77,18 @@ local plugins = {
         },
     },
 
-    -- Trouble
     {
-        "folke/trouble.nvim",
-        config = function()
-            require("trouble").setup({
-                icons = false,
-            })
-        end,
-    },
+        "f-person/git-blame.nvim",
+        -- load the plugin at startup
+        event = "VeryLazy",
+        opts = {
+            enabled = true,
+            message_template = " <summary> • <date> • <author> • <<sha>>",
+            date_format = "%m-%d-%Y",
+            virtual_text_column = 1,
+        },
 
-    -- Blame
-    "FabijanZulj/blame.nvim",
+    },
 
     -- LuaSnip
     {
@@ -126,14 +116,6 @@ local plugins = {
 
     -- Quick files
     "theprimeagen/harpoon",
-    "theprimeagen/refactoring.nvim",
-    "nvim-treesitter/nvim-treesitter-context",
-
-
-    -- Neodev
-    {
-        "folke/neodev.nvim",
-    },
 
     -- Lualine
     {
@@ -151,6 +133,15 @@ local plugins = {
 
     -- Notebook
     "hkupty/iron.nvim",
+
+    -- Startup
+    {
+        "startup-nvim/startup.nvim",
+        dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim", "nvim-telescope/telescope-file-browser.nvim" },
+        config = function()
+            require("startup").setup(require("config.startup"))
+        end
+    },
 }
 
 require('lazy').setup(plugins, {})

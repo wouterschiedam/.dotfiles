@@ -1,6 +1,6 @@
 -- lua/lsp-zero-config.lua
-
 local lsp_zero = require('lsp-zero')
+local lspconfig = require('lspconfig')
 
 local function diagnostics_to_quickfix()
     vim.diagnostic.setqflist({ open = true })
@@ -53,7 +53,7 @@ end)
 
 -- Setup specific LSP servers with custom configurations
 -- Intelephense (PHP)
-require('lspconfig').intelephense.setup({
+lspconfig.intelephense.setup({
     cmd = { "node", "--max-old-space-size=4096", vim.fn.expand("~/.local/share/nvim/mason/bin/intelephense"), "--stdio" },
     root_dir = function(fname)
         return require('lspconfig').util.find_git_ancestor(fname) or vim.fn.getcwd()
@@ -69,7 +69,7 @@ require('lspconfig').intelephense.setup({
 })
 
 -- Rust Analyzer
-require('lspconfig').rust_analyzer.setup({
+lspconfig.rust_analyzer.setup({
     cmd = { "rust-analyzer" },
     root_dir = vim.loop.cwd,
     settings = {
@@ -89,6 +89,23 @@ require('lspconfig').rust_analyzer.setup({
         }
     },
     -- on_attach is handled by lsp-zero's on_attach
+})
+
+lspconfig.lua_ls.setup({
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { "vim" },
+            },
+            workspace = {
+                library = vim.api.nvim_get_runtime_file("", true), -- Make the server aware of Neovim runtime files
+                checkThirdParty = false, -- Disable third-party library checking if unnecessary
+            },
+            telemetry = {
+                enable = false, -- Disable telemetry to reduce unnecessary data collection
+            },
+        },
+    },
 })
 
 -- Finalize lsp-zero setup
