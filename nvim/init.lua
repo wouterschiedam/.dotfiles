@@ -1,2 +1,4 @@
-require("wouter")
-vim.g.python3_host_prog='/opt/homebrew/bin/python3'
+require("config.lazy")
+require("config.general.keymap")
+require("config.general.options")
+

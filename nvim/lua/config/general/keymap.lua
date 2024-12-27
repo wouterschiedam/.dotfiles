@@ -29,3 +29,20 @@ vim.api.nvim_set_keymap('n', '<leader>fs', '<C-w>|', { noremap = true, silent = 
 -- ExitFullscreen
 vim.api.nvim_set_keymap('n', '<leader>rs', '<C-w>=', { noremap = true, silent = true })
 
+-- Define the FormatFiles function
+local function FormatFiles(path, command)
+  vim.cmd('args ' .. path)
+  vim.cmd('argdo ' .. command .. ' | update')
+end
+
+-- Create the custom command
+vim.api.nvim_create_user_command(
+  'FormatFiles',
+  function(opts)
+    FormatFiles(opts.fargs[1], table.concat(opts.fargs, ' ', 2))
+  end,
+  { nargs = '+' }
+)
+
+
+vim.g.python3_host_prog='/opt/homebrew/bin/python3'
