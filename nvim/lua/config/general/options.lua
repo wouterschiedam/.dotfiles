@@ -33,4 +33,3 @@ set.updatetime = 50
 
 -- set.colorcolumn = "150"
 set.formatoptions = vim.o.formatoptions:gsub('cro', '') -- Avoid comments to continue on new lines
-

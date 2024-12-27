@@ -1,2 +1,1 @@
-# nvim-vetup
-# Test
+# nvim-setup

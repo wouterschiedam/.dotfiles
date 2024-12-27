@@ -2,10 +2,12 @@ return {
   {
     "rose-pine/neovim",
     name = "rose-pine",
+    "folke/tokyonight.nvim",
     config = function()
-      vim.cmd.colorscheme('rose-pine')
+      vim.cmd.colorscheme "tokyonight"
 
-      local function KeepBackground()
+      _G.doRecolor = function()
+        vim.cmd.colorscheme('rose-pine')
         -- General background removal
         vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
         vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
@@ -53,9 +55,7 @@ return {
         end
       end
 
-      KeepBackground()
     end,
   }
 }
-
 
