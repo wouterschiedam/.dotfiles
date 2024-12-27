@@ -53,8 +53,7 @@ function M.setup(opts)
       return
     end
 
-    -- TODO: Make floating window to show preview
-
+    -- TODO: Make floating window to show preview of replace
     -- Iterate over each item in quickfix list
     for i = #quickfix_list, 1, -1 do
       local entry = quickfix_list[i]
