@@ -4,6 +4,7 @@ return {
     config = function()
       require("plugin.vimgrep_replace").setup({
         options = {
+          excluded_dir = {'node_modules', '.git', 'vendor'},
           keymaps = {
             global = {
               vimgrep = '<leader>vg',

@@ -2,12 +2,14 @@
 local M = {}
 
 local state = {
+    directory = nil,
     search_term = nil,
     replacement = nil,
     highlight_group = {},
     context = nil,  -- Stores the UI context for floating windows
     current_index = 1, -- Tracks the current quickfix entry being processed
     options = { -- Default options can be overwritten
+      excluded_dir = {},
       keymaps = {
         toggle = "<Tab>",
         global = {
@@ -34,6 +36,18 @@ local state = {
     },
     buffers = {}
 }
+
+function M.get_excluded_dir()
+  return state.options.excluded_dir
+end
+
+function M.set_dir(dir)
+    state.directory = dir
+end
+
+function M.get_dir()
+    return state.directory
+end
 
 function M.set_search_term(term)
     state.search_term = term
