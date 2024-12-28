@@ -1,12 +1,6 @@
 -- lua/plugin/vimgrep_replace/keymaps.lua
 local M = {}
 
-local mappings = {
-  toggle = "<Tab>", -- Default key for toggling windows
-  accept = "<CR>", -- Default key for accepting changes
-  decline = "<Esc>", -- Default key for declining changes
-}
-
 function M.setup_global_keymaps(opts)
   opts = opts or {}
 
@@ -17,38 +11,38 @@ function M.setup_global_keymaps(opts)
   local actions = require("plugin.vimgrep_replace.actions")
 
   -- vimgrep (vg) - allows search term entry and searches files
-vim.keymap.set('n', keymaps.vimgrep or '<leader>vg', function()
-  local search_term = vim.fn.input(search_prompt)
+  vim.keymap.set('n', keymaps.vimgrep or '<leader>vg', function()
+    local search_term = vim.fn.input(search_prompt)
 
-  if search_term and search_term ~= '' then
-    state.set_search_term(search_term)
+    if search_term and search_term ~= '' then
+      state.set_search_term(search_term)
 
-    -- Find all matching files
-    local results = vim.fn.systemlist('grep -n -r "' .. search_term .. '" .')
+      -- Find all matching files
+      local results = vim.fn.systemlist('grep -n -r "' .. search_term .. '" .')
 
-    -- Parse results and populate the quickfix list
-    local qf_entries = {}
-    for _, result in ipairs(results) do
-      local filepath, lnum, match = result:match("([^:]+):(%d+):(.*)")
-      if filepath and lnum and match then
-        table.insert(qf_entries, {
-          filename = filepath,
-          lnum = tonumber(lnum),
-          text = match,
-        })
+      -- Parse results and populate the quickfix list
+      local qf_entries = {}
+      for _, result in ipairs(results) do
+        local filepath, lnum, match = result:match("([^:]+):(%d+):(.*)")
+        if filepath and lnum and match then
+          table.insert(qf_entries, {
+            filename = filepath,
+            lnum = tonumber(lnum),
+            text = match,
+          })
+        end
       end
-    end
 
-    if #qf_entries > 0 then
-      vim.fn.setqflist(qf_entries, 'r') -- Replace the quickfix list with the new entries
-      vim.cmd('copen') -- Open the quickfix list without opening files
+      if #qf_entries > 0 then
+        vim.fn.setqflist(qf_entries, 'r') -- Replace the quickfix list with the new entries
+        vim.cmd('copen') -- Open the quickfix list without opening files
+      else
+        print('No matches found for "' .. search_term .. '"')
+      end
     else
-      print('No matches found for "' .. search_term .. '"')
+      print('Search term cannot be empty!')
     end
-  else
-    print('Search term cannot be empty!')
-  end
-end, { noremap = true, silent = true, desc = 'Search using vimgrep in current directory' })
+  end, { noremap = true, silent = true, desc = 'Search using vimgrep in current directory' })
 
   -- quickfix replace (qr) - replaces search term with the user input
   vim.keymap.set("n", keymaps.replace or "<leader>qr", function()
@@ -57,11 +51,24 @@ end, { noremap = true, silent = true, desc = 'Search using vimgrep in current di
 end
 
 function M.setup_buffer_keymaps(context, keymaps)
-  keymaps = keymaps or { toggle = "<Tab>" }
+
+  print(keymaps.buffer.toggle)
 
   -- Keybinding for toggling between the floating windows
-  vim.api.nvim_buf_set_keymap(context.left_buf, "n", keymaps.toggle, "<Cmd>wincmd w<CR>", { noremap = true, silent = true })
-  vim.api.nvim_buf_set_keymap(context.right_buf, "n", keymaps.toggle, "<Cmd>wincmd w<CR>", { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(context.left_buf, "n", keymaps.buffer.toggle, "<Cmd>wincmd w<CR>", { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(context.right_buf, "n", keymaps.buffer.toggle, "<Cmd>wincmd w<CR>", { noremap = true, silent = true })
+
+  -- Keybinding for accepting the replacement
+  vim.api.nvim_buf_set_keymap(context.right_buf, "n", keymaps.buffer.accept, ":lua require('plugin.vimgrep_replace.actions').accept_change()<CR>", { noremap = true, silent = true })
+
+  -- Keybinding for rejecting the replacement
+  vim.api.nvim_buf_set_keymap(context.right_buf, "n", keymaps.buffer.decline, ":lua require('plugin.vimgrep_replace.actions').decline_change()<CR>", { noremap = true, silent = true })
+
+  -- Keybinding for canceling the replacement
+  vim.api.nvim_buf_set_keymap(context.right_buf, "n", keymaps.buffer.cancel, ":lua require('plugin.vimgrep_replace.actions').cancel_process()<CR>", { noremap = true, silent = true })
+
+  -- Keybinding for canceling the replacement
+  vim.api.nvim_buf_set_keymap(context.right_buf, "n", keymaps.buffer.skip, ":lua require('plugin.vimgrep_replace.actions').skip_change()<CR>", { noremap = true, silent = true })
 end
 
 return M

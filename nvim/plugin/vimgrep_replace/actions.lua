@@ -1,9 +1,60 @@
 -- lua/plugin/vimgrep_replace/actions.lua
+local state = require("plugin.vimgrep_replace.state")
+local ui = require("plugin.vimgrep_replace.ui")
+local keymaps = require("plugin.vimgrep_replace.keymaps")
+
 local M = {}
 
-local ui = require("plugin.vimgrep_replace.ui")
-local state = require("plugin.vimgrep_replace.state")
-local keymaps = require("plugin.vimgrep_replace.keymaps")
+function M.preview_next_change()
+  local quickfix_list = vim.fn.getqflist()
+  local current_index = state.get_current_index()
+
+  if current_index > #quickfix_list then
+    vim.notify("All changes reviewed.", vim.log.levels.INFO)
+    local context = state.get_context()
+    if context then
+      vim.api.nvim_win_close(context.left_win, true)
+      vim.api.nvim_win_close(context.right_win, true)
+    end
+    state.set_context(nil)
+    return
+  end
+
+  local entry = quickfix_list[current_index]
+  local file = entry.bufnr and vim.fn.bufname(entry.bufnr) or entry.filename
+  local context = state.get_context()
+
+  ui.set_split_buffer_content(context, file, entry.lnum, entry.col, state.get_search_term(), state.get_replacement())
+
+  if not context then
+    print("Context cannot be a nill value...")
+    return
+  end
+
+  keymaps.setup_buffer_keymaps(state.get_buffers(), state.get_options().keymaps)
+end
+
+function M.accept_change()
+  local current_index = state.get_current_index()
+  state.set_current_index(current_index + 1)
+  M.preview_next_change()
+end
+
+function M.decline_change()
+  local current_index = state.get_current_index()
+  state.set_current_index(current_index + 1)
+  M.preview_next_change()
+end
+
+function M.cancel_process()
+  local context = state.get_context()
+  if context then
+    vim.api.nvim_win_close(context.left_win, true)
+    vim.api.nvim_win_close(context.right_win, true)
+  end
+  state.set_context(nil)
+  vim.notify("Operation canceled.", vim.log.levels.WARN)
+end
 
 function M.replace_quickfix(replace_prompt)
   local search_term = state.get_search_term()
@@ -18,6 +69,8 @@ function M.replace_quickfix(replace_prompt)
     return
   end
 
+  state.set_replacement(replace_with)
+
   local quickfix_list = vim.fn.getqflist()
 
   if vim.tbl_isempty(quickfix_list) then
@@ -25,39 +78,12 @@ function M.replace_quickfix(replace_prompt)
     return
   end
 
-  local context = ui.create_split_in_single_buffer(keymaps.mappings)
+  local context = ui.create_split_in_single_buffer()
+  state.set_context(context)
+  state.set_current_index(1)
 
-  for i = #quickfix_list, 1, -1 do
-    local entry = quickfix_list[i]
-    local file = entry.bufnr and vim.fn.bufname(entry.bufnr) or entry.filename
-
-    if file and file ~= "" then
-      local lnum = entry.lnum
-      local col = entry.col
-      local bufnr = vim.fn.bufadd(file) -- Add the file to the buffer list
-      vim.fn.bufload(bufnr) -- Load the buffer content into memory without opening it
-
-      -- Get the specific line from the buffer
-      local lines = vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, false)
-      if #lines > 0 then
-        local current_line = lines[1]
-        local updated_line = current_line:sub(1, col - 1) .. replace_with .. current_line:sub(col + #search_term)
-
-        -- Update the line in the buffer
-        vim.api.nvim_buf_set_lines(bufnr, lnum - 1, lnum, false, { updated_line })
-
-        -- Show the change in the split buffer for preview
-        ui.set_split_buffer_content(context, file, lnum, col, search_term, replace_with)
-
-        -- Save the buffer to persist changes to disk
-        vim.api.nvim_buf_call(bufnr, function()
-          vim.cmd("write")
-        end)
-
-        return -- Show one replacement at a time
-      end
-    end
-  end
+  -- Preview the first match
+  M.preview_next_change()
 end
 
 return M
