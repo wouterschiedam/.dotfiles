@@ -1,46 +1,73 @@
 -- lua/plugin/vimgrep_replace/ui.lua
+local state = require("plugin.vimgrep_replace.state")
+local keymaps = require("plugin.vimgrep_replace.keymaps")
+local utils = require("plugin.vimgrep_replace.utils")
 -- TODO: Make sure vsplit does it in floating window buffer. Stream line process of accepting and rejecting a replacement
 local M = {}
 
--- Create a single buffer with vertical split
-function M.create_split_in_single_buffer()
+-- Create a buffer with vertical split
+function M.create_split_in_single_buffer(opts)
+  -- Dimensions for the floating windows
   local total_width = math.floor(vim.o.columns * 0.8)
-  local total_height = math.floor(vim.o.lines * 0.5)
+  local total_height = math.floor(vim.o.lines * 0.6)
+  local split_width = math.floor(total_width / 2) - 1 -- Subtract 1 to account for borders
 
+  -- Calculate the center position for both windows
   local col = math.floor((vim.o.columns - total_width) / 2)
   local row = math.floor((vim.o.lines - total_height) / 2)
 
-  -- Create a buffer
-  local buf = vim.api.nvim_create_buf(false, true) -- No file, scratch buffer
+  -- Create buffers
+  local left_buf = vim.api.nvim_create_buf(false, true)
+  local right_buf = vim.api.nvim_create_buf(false, true)
 
-  -- Define window configuration for the main floating window
-  local win_config = {
-    relative = "editor",
-    width = total_width,
+  -- Create the left floating window
+  local left_win = utils.setup_floating_window(left_buf, {
+    title = "Search",
+    title_pos = "center",
+    relative = "editor", -- Center relative to the entire editor
+    width = split_width,
     height = total_height,
-    col = col,
-    row = row,
+    col = col, -- Start at the calculated center column
+    row = row, -- Start at the calculated center row
     style = "minimal",
-    border = "rounded",
+    border = "rounded"
+  }, {
+    cursorline = false,
+  })
+
+  -- Create the right floating window
+  local right_win = utils.setup_floating_window(right_buf, {
+    title = "Replace",
+    title_pos = "center",
+    relative = "editor", -- Center relative to the entire editor
+    width = split_width,
+    height = total_height,
+    col = col + split_width + 2, -- Account for the left window's border
+    row = row, -- Same vertical alignment
+    style = "minimal",
+    border = "rounded"
+  }, {
+    cursorline = false,
+  })
+
+  keymaps.setup_buffer_keymaps({
+    left_buf = left_buf,
+    right_buf = right_buf,
+  }, opts)
+
+  -- Return the context
+  return {
+    left_buf = left_buf,
+    right_buf = right_buf,
+    left_win = left_win,
+    right_win = right_win,
   }
-
-  -- Create the main floating window
-  local win = vim.api.nvim_open_win(buf, true, win_config)
-
-  vim.api.nvim_set_current_win(win)
-
-  -- Split the window into two using :vsplit
-  vim.api.nvim_win_set_option(win, "splitright", true) -- Ensure splits go to the right
-  vim.cmd("vsplit")
-  local split_win = vim.api.nvim_get_current_win()
-
-  -- Return the buffer and both window handles
-  return { buf = buf, left_win = win, right_win = split_win }
 end
 
 -- Update the content in both splits of the single buffer
 function M.set_split_buffer_content(context, file, lnum, col, search_term, replace_with)
-  local buf = context.buf
+  local buf_left = context.left_buf
+  local buf_right = context.right_buf
   local left_win = context.left_win
   local right_win = context.right_win
 
@@ -53,46 +80,69 @@ function M.set_split_buffer_content(context, file, lnum, col, search_term, repla
   local end_line = lnum + 5
   local lines = vim.api.nvim_buf_get_lines(bufnr, start_line, end_line, false)
 
-  -- Ensure we have valid lines
   if #lines > 0 then
     -- Determine filetype from the file extension
     local filetype = vim.fn.fnamemodify(file, ":e")
 
-    -- Original content for the left split
-    local left_lines = vim.deepcopy(lines)
-    table.insert(left_lines, "")
-    table.insert(left_lines, "[y] Accept | [n] Decline")
-
-    -- Updated content for the right split
-    local right_lines = vim.deepcopy(lines)
-    local target_line_index = lnum - start_line - 1
-    if target_line_index >= 0 and target_line_index < #right_lines then
-      right_lines[target_line_index + 1] =
-        right_lines[target_line_index + 1]:sub(1, col - 1) .. replace_with .. right_lines[target_line_index + 1]:sub(col + #search_term)
+    -- Original and updated content with line numbers
+    local left_lines = {}
+    local right_lines = {}
+    for i, line in ipairs(lines) do
+      local original_line_number = start_line + i
+      local line_number_prefix = string.format("%4d | ", original_line_number)
+      table.insert(left_lines, line_number_prefix .. line)
+      table.insert(right_lines, line_number_prefix .. line)
     end
 
-    table.insert(right_lines, "")
-    table.insert(right_lines, "[y] Accept | [n] Decline")
+    -- Modify the replacement content in the right buffer
+    local target_line_index = lnum - start_line
+    if target_line_index >= 1 and target_line_index <= #right_lines then
+      local prefix = string.format("%4d | ", lnum)
+      local target_line = right_lines[target_line_index]:sub(#prefix + 1) -- Remove the line number prefix
+      right_lines[target_line_index] =
+        prefix .. target_line:sub(1, col - 1) .. replace_with .. target_line:sub(col + #search_term)
+    end
 
-    -- Update the buffer content and set the view for the left split
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, left_lines)
-    vim.api.nvim_win_set_cursor(left_win, { lnum, col })
-
-    -- Set the view for the right split and update the replacement
-    vim.api.nvim_set_current_win(right_win)
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, right_lines)
-    vim.api.nvim_win_set_cursor(right_win, { lnum, col })
+    -- Update the buffer content
+    vim.api.nvim_buf_set_lines(buf_left, 0, -1, false, left_lines)
+    vim.api.nvim_buf_set_lines(buf_right, 0, -1, false, right_lines)
 
     -- Set filetype for syntax highlighting
-    vim.api.nvim_buf_set_option(buf, "filetype", filetype)
+    vim.api.nvim_buf_set_option(buf_left, "filetype", filetype)
+    vim.api.nvim_buf_set_option(buf_right, "filetype", filetype)
 
-    -- Highlight the match in the left split
+    -- Namespace for highlights
     local ns_id = vim.api.nvim_create_namespace("highlight_replace_preview")
-    vim.api.nvim_buf_clear_namespace(buf, ns_id, 0, -1)
-    vim.api.nvim_buf_add_highlight(buf, ns_id, "ErrorMsg", target_line_index, col - 1, col - 1 + #search_term)
 
-    -- Highlight the replacement in the right split
-    vim.api.nvim_buf_add_highlight(buf, ns_id, "Search", target_line_index, col - 1, col - 1 + #replace_with)
+    -- Highlight the search term in the left buffer
+    vim.api.nvim_buf_clear_namespace(buf_left, ns_id, 0, -1)
+    vim.api.nvim_buf_add_highlight(
+      buf_left,
+      ns_id,
+      "Search",
+      target_line_index,
+      col - 1 + #string.format("%4d | ", lnum), -- Account for line number prefix
+      col - 1 + #string.format("%4d | ", lnum) + #search_term
+    )
+
+    -- Highlight the replacement term in the right buffer
+    vim.api.nvim_buf_clear_namespace(buf_right, ns_id, 0, -1)
+    vim.api.nvim_buf_add_highlight(
+      buf_right,
+      ns_id,
+      "Replace",
+      target_line_index,
+      col - 1 + #string.format("%4d | ", lnum), -- Account for line number prefix
+      col - 1 + #string.format("%4d | ", lnum) + #replace_with
+    )
+
+    -- Ensure cursor position is valid and set it for both splits
+    local cursor_line = math.min(target_line_index + 1, #left_lines)
+    local cursor_col = math.min(col, #(lines[cursor_line] or "")) + #string.format("%4d | ", lnum)
+    vim.api.nvim_win_set_cursor(left_win, { cursor_line, cursor_col - 1 })
+    vim.api.nvim_win_set_cursor(right_win, { cursor_line, cursor_col - 1 })
+  else
+    vim.notify("No lines fetched from the buffer.", vim.log.levels.ERROR)
   end
 end
 
