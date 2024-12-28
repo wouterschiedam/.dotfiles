@@ -86,8 +86,6 @@ function M.set_split_buffer_content(context, file, lnum, col, search_term, repla
             table.insert(right_lines, prefix .. line)
         end
 
-        local prefix_len = #string.format("%4d | ", lnum)
-
         -- Perform replacement on the target line in the right buffer
         local target_line_index = lnum - start_line - 1
         local start_pos, end_pos

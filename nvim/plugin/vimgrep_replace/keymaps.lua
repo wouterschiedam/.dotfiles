@@ -52,11 +52,14 @@ end
 
 function M.setup_buffer_keymaps(context, keymaps)
 
-  print(keymaps.buffer.toggle)
-
   -- Keybinding for toggling between the floating windows
-  vim.api.nvim_buf_set_keymap(context.left_buf, "n", keymaps.buffer.toggle, "<Cmd>wincmd w<CR>", { noremap = true, silent = true })
-  vim.api.nvim_buf_set_keymap(context.right_buf, "n", keymaps.buffer.toggle, "<Cmd>wincmd w<CR>", { noremap = true, silent = true })
+  vim.api.nvim_buf_set_keymap(context.left_buf, "n", keymaps.buffer.toggle,
+  ":lua require('plugin.vimgrep_replace.actions').focus_window_from_state(" .. context.right_buf .. ")<CR>",
+  { noremap = true, silent = true })
+
+  vim.api.nvim_buf_set_keymap(context.right_buf, "n", keymaps.buffer.toggle,
+  ":lua require('plugin.vimgrep_replace.actions').focus_window_from_state(" .. context.left_buf .. ")<CR>",
+  { noremap = true, silent = true })
 
   -- Keybinding for accepting the replacement
   vim.api.nvim_buf_set_keymap(context.right_buf, "n", keymaps.buffer.accept, ":lua require('plugin.vimgrep_replace.actions').accept_change()<CR>", { noremap = true, silent = true })
