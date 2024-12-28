@@ -1,14 +1,5 @@
 -- lua/plugin/vimgrep_replace/init.lua
--- test
--- test
--- test
--- test
--- test
--- toet
--- toet
--- test
--- toet
---
+-- -- test
 local M = {}
 local keymaps = require("plugin.vimgrep_replace.keymaps")
 
@@ -19,33 +10,7 @@ function M.setup(opts)
   keymaps.setup_global_keymaps(opts)
 end
 
-M.setup({
-  options = {
-    keymaps = {
-      global = {
-        vimgrep = '<leader>vg',
-        replace = '<leader>qr',
-      },
-      buffer = {
-        toggle = "<Tab>",
-        accept = 'l',
-        decline = 'h',
-        cancel = 'q',
-        skip = 'n',
-      },
-    },
-    highlight_group = {
-      search = {
-        fg = '#ffffff',
-        bg = '#808080',
-      },
-      replace = {
-        fg = '#ffffff',
-        bg = '#FF0000',
-      },
-    },
-  }
-})
+return M
 
 -- Setup
 -- {
