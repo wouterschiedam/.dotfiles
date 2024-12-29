@@ -159,31 +159,31 @@ function M.replace_quickfix(replace_prompt)
 end
 
 function M.focus_window_from_state(target_buf)
-    -- Ensure context is set
-    local buf = state.get_context()
+  -- Ensure context is set
+  local buf = state.get_context()
 
-    if not buf then
-        vim.notify("State context is not properly initialized.", vim.log.levels.ERROR)
-        return
-    end
+  if not buf then
+    vim.notify("State context is not properly initialized.", vim.log.levels.ERROR)
+    return
+  end
 
-    -- Get the current buffer and its corresponding window
-    local target_win
-    if target_buf == buf.left_buf then
-        target_win = buf.left_win
-    elseif target_buf == buf.right_buf then
-        target_win = buf.right_win
-    else
-        vim.notify("Buffer is not part of the floating windows in the state.", vim.log.levels.WARN)
-        return
-    end
+  -- Get the current buffer and its corresponding window
+  local target_win
+  if target_buf == buf.left_buf then
+    target_win = buf.left_win
+  elseif target_buf == buf.right_buf then
+    target_win = buf.right_win
+  else
+    vim.notify("Buffer is not part of the floating windows in the state.", vim.log.levels.WARN)
+    return
+  end
 
-    -- Ensure the target window is valid
-    if vim.api.nvim_win_is_valid(target_win) then
-        vim.api.nvim_set_current_win(target_win)
-    else
-        vim.notify("Target window is no longer valid.", vim.log.levels.ERROR)
-    end
+  -- Ensure the target window is valid
+  if vim.api.nvim_win_is_valid(target_win) then
+    vim.api.nvim_set_current_win(target_win)
+  else
+    vim.notify("Target window is no longer valid.", vim.log.levels.ERROR)
+  end
 end
 
 

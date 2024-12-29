@@ -15,13 +15,12 @@ function M.setup_global_keymaps(opts)
     local search_term = vim.fn.input(search_prompt)
 
     if search_term and search_term ~= '' then
-      -- TODO: Fix exclude_cmd and include cmd
       local temp_search = vim.split(search_term, " ")
       search_term = temp_search[1]
       local directory
 
       if #temp_search > 1 then
-        directory = temp_search[2]
+        directory = temp_search[#temp_search]
       end
 
       state.set_search_term(search_term)
@@ -36,7 +35,6 @@ function M.setup_global_keymaps(opts)
 
       -- Find all matching files
       local command = 'grep -n -r ' .. exclude_cmd .. '"' .. search_term .. '" "' .. directory .. '"'
-      print(command)
       local results = vim.fn.systemlist(command)
 
       -- Parse results and populate the quickfix list
