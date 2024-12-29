@@ -94,6 +94,10 @@ alias grep="rg"
 export JAVA_HOME=$(/usr/libexec/java_home -v 19)
 export VIMRUNTIME=/opt/homebrew/Cellar/neovim/0.10.2_1/share/nvim/runtime
 
+if [ -f ~/.dotfiles/.api_keys.env ]; then
+    source ~/.dotfiles/.api_keys.env
+fi
+
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm

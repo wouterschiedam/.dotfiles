@@ -4,3 +4,4 @@ spicetify/CustomApps
 spicetify/Backup
 spicetify/Themes/spicetify-themes
 .DS_Store
+.api_keys.env

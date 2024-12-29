@@ -15,7 +15,7 @@ function M.setup_global_keymaps(opts)
     local search_term = vim.fn.input(search_prompt)
 
     if search_term and search_term ~= '' then
-
+      -- TODO: Fix exclude_cmd and include cmd
       local temp_search = vim.split(search_term, " ")
       search_term = temp_search[1]
       local directory
