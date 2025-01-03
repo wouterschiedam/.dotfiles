@@ -5,65 +5,73 @@ function M.setup_global_keymaps(opts)
   opts = opts or {}
 
   local keymaps = opts.keymaps or {}
-  local search_prompt = opts.search_prompt or "Search term: "
-  local replace_prompt = opts.replace_prompt or "Replace with: "
   local state = require("plugin.vimgrep_replace.state")
   local actions = require("plugin.vimgrep_replace.actions")
+  local ui = require("plugin.vimgrep_replace.ui")
 
   -- vimgrep (vg) - allows search term entry and searches files
   vim.keymap.set('n', keymaps.vimgrep or '<leader>vg', function()
-    local search_term = vim.fn.input(search_prompt)
 
-    if search_term and search_term ~= '' then
-      local temp_search = vim.split(search_term, " ")
-      search_term = temp_search[1]
-      local directory
+    ui.create_input_window("Search", function(input)
+      local search_term = input
 
-      if #temp_search > 1 then
-        directory = temp_search[#temp_search]
-      end
-
-      state.set_search_term(search_term)
-      state.set_dir(directory)
-
-      local excluded_dirs = state.get_excluded_dir()
-      local exclude_cmd = ""
-
-      for _, dir in ipairs(excluded_dirs) do
-        exclude_cmd = exclude_cmd .. '--exclude-dir=' .. vim.fn.shellescape(dir) .. " "
-      end
-
-      -- Find all matching files
-      local command = 'grep -n -r ' .. exclude_cmd .. '"' .. search_term .. '" "' .. directory .. '"'
-      local results = vim.fn.systemlist(command)
-
-      -- Parse results and populate the quickfix list
-      local qf_entries = {}
-      for _, result in ipairs(results) do
-        local filepath, lnum, match = result:match("([^:]+):(%d+):(.*)")
-        if filepath and lnum and match then
-          table.insert(qf_entries, {
-            filename = filepath,
-            lnum = tonumber(lnum),
-            text = match,
-          })
+      if search_term and search_term ~= '' then
+        -- Remove the leading '% ' if present
+        if search_term:sub(1, 2) == '% ' then
+          search_term = search_term:sub(3)
         end
-      end
 
-      if #qf_entries > 0 then
-        vim.fn.setqflist(qf_entries, 'r') -- Replace the quickfix list with the new entries
-        vim.cmd('copen') -- Open the quickfix list without opening files
+        local temp_search = vim.split(search_term, " ")
+        local directory = '.'
+
+        if #temp_search > 1 then
+          directory = temp_search[#temp_search]
+        end
+
+        search_term = table.concat(temp_search, " ", 1, #temp_search - 1)
+
+        state.set_search_term(search_term)
+        state.set_dir(directory)
+
+        local excluded_dirs = state.get_excluded_dir()
+        local exclude_cmd = ""
+
+        for _, dir in ipairs(excluded_dirs) do
+          exclude_cmd = exclude_cmd .. '--exclude-dir=' .. vim.fn.shellescape(dir) .. " "
+        end
+
+        -- Find all matching files
+        local command = 'grep -n -r ' .. exclude_cmd .. '"' .. search_term .. '" "' .. directory .. '"'
+        local results = vim.fn.systemlist(command)
+
+        -- Parse results and populate the quickfix list
+        local qf_entries = {}
+        for _, result in ipairs(results) do
+          local filepath, lnum, match = result:match("([^:]+):(%d+):(.*)")
+          if filepath and lnum and match then
+            table.insert(qf_entries, {
+              filename = filepath,
+              lnum = tonumber(lnum),
+              text = match,
+            })
+          end
+        end
+
+        if #qf_entries > 0 then
+          vim.fn.setqflist(qf_entries, 'r') -- Replace the quickfix list with the new entries
+          vim.cmd('copen') -- Open the quickfix list without opening files
+        else
+          print('No matches found for "' .. search_term .. '"')
+        end
       else
-        print('No matches found for "' .. search_term .. '"')
+        print('Search term cannot be empty!')
       end
-    else
-      print('Search term cannot be empty!')
-    end
+    end)
   end, { noremap = true, silent = true, desc = 'Search using vimgrep in current directory' })
 
   -- quickfix replace (qr) - replaces search term with the user input
   vim.keymap.set("n", keymaps.replace or "<leader>qr", function()
-    actions.replace_quickfix(replace_prompt)
+    actions.replace_quickfix()
   end, { noremap = true, silent = true, desc = "Replace matches in quickfix list" })
 end
 

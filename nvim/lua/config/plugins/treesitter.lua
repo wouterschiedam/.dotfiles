@@ -14,6 +14,9 @@ return {
         -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
         auto_install = true,
 
+        -- List of parsers to ignore installing (for unsupported or unneeded languages)
+        ignore_install = {},
+
         highlight = {
           -- Enable tree-sitter based syntax highlighting
           enable = true,
@@ -24,7 +27,9 @@ return {
           -- Instead of true it can also be a list of languages
           additional_vim_regex_highlighting = false,
         },
+        modules = {},
       })
     end,
   },
 }
+

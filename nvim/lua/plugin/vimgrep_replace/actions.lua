@@ -10,15 +10,21 @@ function M.preview_next_change()
   local current_index = state.get_current_index()
 
   if current_index > #quickfix_list then
-    vim.notify("All changes reviewed.", vim.log.levels.INFO)
-    local context = state.get_context()
-    if context then
-      vim.api.nvim_win_close(context.left_win, true)
-      vim.api.nvim_win_close(context.right_win, true)
-      vim.cmd("cclose") -- Close quickfix window
+    if #quickfix_list == 0 then
+      vim.notify("All changes reviewed.", vim.log.levels.INFO)
+      local context = state.get_context()
+      if context then
+        vim.api.nvim_win_close(context.left_win, true)
+        vim.api.nvim_win_close(context.right_win, true)
+        vim.cmd("cclose") -- Close quickfix window
+      end
+      state.set_context(nil)
+      return
     end
-    state.set_context(nil)
-    return
+
+    -- Reset index to 0 we skipped some changes
+    state.set_current_index(0)
+    current_index = 0
   end
 
   local entry = quickfix_list[current_index]
@@ -114,6 +120,19 @@ end
 
 function M.decline_change()
   local current_index = state.get_current_index()
+
+  -- Remove current_index
+  local quickfix_list = vim.fn.getqflist()
+  table.remove(quickfix_list, current_index)
+
+  state.set_current_index(current_index + 1)
+  M.preview_next_change()
+end
+
+
+function M.skip_change()
+  local current_index = state.get_current_index()
+
   state.set_current_index(current_index + 1)
   M.preview_next_change()
 end
@@ -128,34 +147,39 @@ function M.cancel_process()
   vim.notify("Operation canceled.", vim.log.levels.WARN)
 end
 
-function M.replace_quickfix(replace_prompt)
+function M.replace_quickfix()
   local search_term = state.get_search_term()
   if not search_term or search_term == "" then
     print("No search term found! Run <leader>vg first.")
     return
   end
 
-  local replace_with = vim.fn.input(string.format(replace_prompt, search_term))
-  if replace_with == "" then
-    print("Replacement cannot be empty")
-    return
-  end
+  ui.create_input_window('Replacement', function(input)
+    if input:sub(1, 2) == '% ' then
+      input = input:sub(3)
+    end
 
-  state.set_replacement(replace_with)
+    if input == "" then
+      print("Replacement cannot be empty")
+      return
+    end
 
-  local quickfix_list = vim.fn.getqflist()
+    state.set_replacement(input)
 
-  if vim.tbl_isempty(quickfix_list) then
-    print("Quickfix is empty!")
-    return
-  end
+    local quickfix_list = vim.fn.getqflist()
 
-  local context = ui.create_split_in_single_buffer()
-  state.set_context(context)
-  state.set_current_index(1)
+    if vim.tbl_isempty(quickfix_list) then
+      print("Quickfix is empty!")
+      return
+    end
 
-  -- Preview the first match
-  M.preview_next_change()
+    local context = ui.create_split_in_single_buffer()
+    state.set_context(context)
+    state.set_current_index(1)
+
+    -- Preview the first match
+    M.preview_next_change()
+  end)
 end
 
 function M.focus_window_from_state(target_buf)

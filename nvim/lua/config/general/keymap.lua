@@ -17,6 +17,9 @@ vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Jump to previous search term' })
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
+-- Replace under cursor in whole buffer
+vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
 -- Pastes copied buffer and keeps it in the register
 vim.keymap.set('x', '<leader>p', '\"_dP')
 

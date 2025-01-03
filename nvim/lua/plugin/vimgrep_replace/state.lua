@@ -25,13 +25,24 @@ local state = {
     },
     highlight_group = {
       search = {
-        fg = '#ffffff',
-        bg = '#808080',
+        fg = '#C0CAF5',
+        bg = '#3B4261',
       },
       replace = {
-        fg = '#ffffff',
-        bg = '#FF0000',
+        fg = '#F7768E',
+        bg = '#2A2F4A',
       },
+      win = {
+        leftwin = {
+          guifg = "#7AA2F7",
+        },
+        rightwin = {
+          guifg = "#9ECE6A",
+        },
+        global = {
+          guifg = "#FF9E64",
+        },
+      }
     },
   },
   buffers = {}
@@ -65,21 +76,24 @@ function M.get_replacement()
   return state.replacement
 end
 
-function M.set_highlight_group(opts)
-  state.highlight_group.search = opts.search
-  state.highlight_group.replace = opts.replace
+function M.set_highlight_group()
+  -- Fetch colors from options or use defaults
+  local search_colors = M.get_options().highlight_group.search
+  local replace_colors = M.get_options().highlight_group.replace
+
+  -- Set the Search highlight group
+  vim.api.nvim_set_hl(0, 'vgSearchText', { fg = search_colors.fg, bg = search_colors.bg })
+
+  -- Set the Replace highlight group
+  vim.api.nvim_set_hl(0, 'vgReplaceText', { fg = replace_colors.fg, bg = replace_colors.bg })
+
 end
 
 function M.get_highlight_group()
-  if not state.highlight_group.search or not state.highlight_group.replace then
-    -- Set default highlight groups if not defined
-    vim.api.nvim_set_hl(0, 'Search', { fg = "#ffffff", bg = "#808080" })
-    vim.api.nvim_set_hl(0, 'Replace', { fg = "#ffffff", bg = "#FF0000" })
-
-    state.highlight_group.search = 'Search'
-    state.highlight_group.replace = 'Replace'
-  end
-  return state.highlight_group
+  return {
+    search = 'vgSearchText',
+    replace = 'vgReplaceText',
+  }
 end
 
 function M.set_context(new_context)
@@ -99,7 +113,8 @@ function M.get_current_index()
 end
 
 function M.set_options(opts)
-  state.options = vim.tbl_deep_extend("force", state.options, opts or {})
+  -- Merge new options into defaults without overwriting unspecified keys
+  state.options = vim.tbl_deep_extend("keep", opts or {}, state.options)
 end
 
 function M.get_options()

@@ -4,6 +4,9 @@ alt - s : open -a Safari
 # Focus Terminal (Option + T)
 alt - z : open -a Alacritty
 
+# Focus GIMP (Option + Y)
+alt - g : open -a GIMP
+
 # Focus Spotify (Option + P)
 alt - p : open -a Spotify
 

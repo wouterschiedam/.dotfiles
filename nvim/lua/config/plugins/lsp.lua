@@ -46,11 +46,6 @@ return {
 
       -- Define on_attach for keymaps and other settings
       lsp_zero.on_attach(function(client, bufnr)
-        -- Disable formatting from Intelephense to use null-ls instead
-        if client.name == "intelephense" then
-          client.server_capabilities.documentFormattingProvider = false
-        end
-
         -- Set default keymaps
         lsp_zero.default_keymaps({ buffer = bufnr })
 

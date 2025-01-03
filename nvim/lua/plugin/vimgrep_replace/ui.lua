@@ -1,10 +1,22 @@
 -- lua/plugin/vimgrep_replace/ui.lua
+-- KOEKOEK
 local state = require("plugin.vimgrep_replace.state")
 local utils = require("plugin.vimgrep_replace.utils")
 local M = {}
 
+local function calculate_centered_window(total_width, total_height)
+  -- Calculate center positions based on full editor dimensions
+  local editor_width = vim.o.columns
+  local editor_height = vim.o.lines - vim.fn.winheight(0) + vim.fn.winheight(0) -- Usable lines
+  local center_col = math.floor((editor_width - total_width) / 2)
+  local center_row = math.floor((editor_height - total_height) / 2) / 2
+
+  return center_col, center_row
+end
+
 -- Create a buffer with vertical split
 function M.create_split_in_single_buffer()
+
   -- Dimensions for the floating windows
   local total_width = math.floor(vim.o.columns * 0.8)
   local total_height = math.floor(vim.o.lines * 0.6)
@@ -32,6 +44,7 @@ function M.create_split_in_single_buffer()
     },
     {
       cursorline = false,
+      winhighlight = "FloatBorder:leftwin,FloatTitle:leftwin",
     }
   )
 
@@ -49,6 +62,7 @@ function M.create_split_in_single_buffer()
     },
     {
       cursorline = false,
+      winhighlight = "FloatBorder:rightwin,FloatTitle:rightwin",
     }
   )
 
@@ -129,12 +143,15 @@ function M.set_split_buffer_content(context, file, lnum, col, search_term, repla
     local search_start = start_pos - 1 -- Convert to 0-based index for Vim highlighting
     local search_end = end_pos        -- End position is inclusive in `find`
 
+    -- Debugging
+    -- utils.print_highlight_group(hl_group.search)
+    -- utils.print_highlight_group(hl_group.replace)
+
     -- Calculate the replacement offsets
     local replace_start = search_start
     local replace_end = replace_start + #replace_with
 
     -- Highlight the search term in the left buffer
-    vim.api.nvim_buf_clear_namespace(buf_left, ns_id, 0, -1)
     vim.api.nvim_buf_add_highlight(
       buf_left,
       ns_id,
@@ -145,7 +162,6 @@ function M.set_split_buffer_content(context, file, lnum, col, search_term, repla
     )
 
     -- Highlight the replacement term in the right buffer
-    vim.api.nvim_buf_clear_namespace(buf_right, ns_id, 0, -1)
     vim.api.nvim_buf_add_highlight(
       buf_right,
       ns_id,
@@ -163,6 +179,77 @@ function M.set_split_buffer_content(context, file, lnum, col, search_term, repla
     vim.notify("No lines fetched from buffer for preview.", vim.log.levels.ERROR)
   end
 end
+
+function M.create_input_window(title, callback)
+  local buffer = vim.api.nvim_create_buf(false, true)
+
+  local total_width = math.floor(vim.o.columns * 0.8) / 3
+  local total_height = 1
+  local center_col, center_row = calculate_centered_window(total_width, total_height)
+
+  -- Create a floating window
+  local win = utils.setup_floating_window(buffer, {
+    relative = "editor", -- Center relative to the entire editor
+    width = total_width,
+    height = total_height,
+    col = center_col,
+    row = center_row,
+    style = "minimal",
+    border = "rounded",
+    title = title,
+    title_pos = "center",
+  },{
+    cursorline = false,
+    winhighlight = "FloatBorder:global,FloatTitle:global",
+  })
+
+
+  local function cleanup()
+    if vim.api.nvim_buf_is_valid(buffer) then
+      vim.api.nvim_buf_delete(buffer, { force = true })
+    end
+    if vim.api.nvim_win_is_valid(win) then
+      vim.api.nvim_win_close(win, true)
+    end
+  end
+
+  vim.api.nvim_create_autocmd({ "BufLeave", "WinClosed" }, {
+    buffer = buffer,
+    once = true,
+    callback = cleanup,
+  })
+
+  -- Configure the buffer
+  vim.api.nvim_buf_set_option(buffer, 'buftype', 'prompt')
+  vim.api.nvim_buf_set_keymap(buffer, 'i', '<CR>', '', {
+    noremap = true,
+    silent = true,
+    callback = function()
+      local input = vim.api.nvim_buf_get_lines(buffer, 0, 1, false)[1] or ""
+      vim.api.nvim_win_close(win, true) -- Close the floating window
+      if vim.api.nvim_buf_is_valid(buffer) then
+        vim.api.nvim_buf_delete(buffer, { force = true }) -- Delete the buffer
+      end
+      if callback then callback(input) end -- Pass the input to the callback
+    end,
+  })
+
+  -- Enter insert mode automatically
+  vim.api.nvim_set_current_win(win)
+  vim.cmd("startinsert")
+end
+
+function M.confirm_input(buffer, win, callback)
+  local input = vim.api.nvim_buf_get_lines(buffer, 0, 1, false)[1]
+  if input and input ~= "" then
+    callback(input)
+  end
+
+  if vim.api.nvim_win_is_valid(win) then
+    vim.api.nvim_win_close(win, true)
+  end
+end
+
 
 return M
 

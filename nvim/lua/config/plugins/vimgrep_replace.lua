@@ -27,6 +27,20 @@ return {
               fg = '#ffffff',
               bg = '#FF0000',
             },
+            win = {
+              leftwin = {
+                guifg = "#FFD700",
+                gui = "#FFD700"
+              },
+              rightwin = {
+                guifg = "#0077FF",
+                gui = "#0077FF"
+              },
+              global = {
+                guifg = "#FFBC2D",
+                gui = "#FFBC2D"
+              },
+            }
           },
         }
       })

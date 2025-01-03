@@ -19,5 +19,22 @@ function M.setup_floating_window(buf, win_config, buf_options, win_options)
   return win
 end
 
+function M.set_highlight_groups(group, options)
+  local cmd = string.format(
+    "highlight %s guifg=%s guibg=%s gui=%s",
+    group,
+    options.guifg or "NONE",
+    options.guibg or "NONE",
+    options.gui or "NONE"
+  )
+  vim.cmd(cmd)
+end
+
+function M.print_highlight_group(name)
+  local hl = vim.api.nvim_get_hl_by_name(name, true)
+  print("Highlight Group:", name)
+  print(vim.inspect(hl))
+end
+
 
 return M
